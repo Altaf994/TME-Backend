@@ -1,0 +1,7 @@
+Server running on port 3000
+Error: Not enough questions found. Found 0, requested 10
+    at exports.createAssignment (/Users/altafhassan/Desktop/TME/Backend/src/services/assignService.js:102:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async exports.createAssignment (/Users/altafhassan/Desktop/TME/Backend/src/controllers/assignController.js:24:20) {
+  status: 400
+}

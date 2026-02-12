@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  firstName String
+  lastName  String
+  teacherId String?  @unique
+  password  String
+  role      String   @default("student")
+  section   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CoreQuestion {
+  id         Int     @id @default(autoincrement())
+  serial     Int?
+  A          String?
+  B          String?
+  C          String?
+  D          String?
+  E          String?
+  F          String?
+  G          String?
+  H          String?
+  I          String?
+  J          String?
+  K          String?
+  L          String?
+  M          String?
+  N          String?
+  O          String?
+  P          String?
+  Q          String?
+  R          String?
+  S          String?
+  T          String?
+  answer     String
+  complexity String?
+  length     Int?
+}
+
+model AssignedQuestion {
+  id         Int     @id @default(autoincrement())
+  title      String
+  speed      Float
+  userId     Int?
+  teacherId  String?
+  section    String?
+  studentId  Int?
+  studentsection String?
+  serial     Int?
+  A          String?
+  B          String?
+  C          String?
+  D          String?
+  E          String?
+  F          String?
+  G          String?
+  H          String?
+  I          String?
+  J          String?
+  K          String?
+  L          String?
+  M          String?
+  N          String?
+  O          String?
+  P          String?
+  Q          String?
+  R          String?
+  S          String?
+  T          String?
+  answer     String
+  complexity String?
+  length     Int?
+  createdAt  DateTime @default(now())
+}

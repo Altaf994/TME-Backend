@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "AssignedQuestion" ALTER COLUMN "speed" SET DATA TYPE DOUBLE PRECISION,
+ALTER COLUMN "complexity" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "CoreQuestion" ALTER COLUMN "complexity" SET DATA TYPE TEXT;
