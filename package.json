@@ -10,7 +10,7 @@
     "prisma:generate": "prisma generate"
   },
   "engines": {
-    "node": ">=20.19.0"
+    "node": "22.12.x"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.3.0",
