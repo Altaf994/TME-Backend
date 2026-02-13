@@ -8,6 +8,8 @@ exports.register = async (req, res, next) => {
       firstName,
       lastName,
       teacherId,
+      studentId,
+      section,
       password,
       confirmPassword,
       role = 'student',
@@ -25,8 +27,12 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ error: 'teacherId is required for teachers' });
     }
 
-    const user = await authService.register({ username, email, firstName, lastName, teacherId, password, role });
-    res.status(201).json({ user: { id: user.id, username: user.username, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, teacherId: user.teacherId } });
+    if (role === 'student' && !studentId) {
+      return res.status(400).json({ error: 'studentId is required for students' });
+    }
+
+    const user = await authService.register({ username, email, firstName, lastName, teacherId, studentId, section, password, role });
+    res.status(201).json({ user: { id: user.id, username: user.username, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, teacherId: user.teacherId, studentId: user.studentId, section: user.section } });
   } catch (err) {
     if (err.message === 'Username exists') return res.status(409).json({ error: 'Username already exists' });
     if (err.message === 'Email exists') return res.status(409).json({ error: 'Email already exists' });

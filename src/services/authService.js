@@ -36,7 +36,7 @@ async function getPrismaOrPg() {
   return null;
 }
 
-exports.register = async ({ username, email, firstName, lastName, teacherId, password, role = 'student' }) => {
+exports.register = async ({ username, email, firstName, lastName, teacherId, studentId, section, password, role = 'student' }) => {
   const db = await getPrismaOrPg();
   if (db && db.type === 'prisma') {
     const prisma = db.client;
@@ -49,11 +49,15 @@ exports.register = async ({ username, email, firstName, lastName, teacherId, pas
         const existingByTeacherId = await prisma.user.findUnique({ where: { teacherId } });
         if (existingByTeacherId) throw new Error('TeacherId exists');
       }
+      if (studentId) {
+        const existingByStudentId = await prisma.user.findUnique({ where: { studentId } });
+        if (existingByStudentId) throw new Error('StudentId exists');
+      }
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
       const user = await prisma.user.create({
-        data: { username, email, firstName, lastName, teacherId: teacherId || null, password: hash, role },
-        select: { id: true, username: true, email: true, firstName: true, lastName: true, role: true, teacherId: true },
+        data: { username, email, firstName, lastName, section: section || null, teacherId: teacherId || null, studentId: studentId || null, password: hash, role },
+        select: { id: true, username: true, email: true, firstName: true, lastName: true, role: true, teacherId: true, studentId: true, section: true },
       });
       return user;
     } catch (err) {
@@ -72,11 +76,15 @@ exports.register = async ({ username, email, firstName, lastName, teacherId, pas
       const r3 = await pool.query('SELECT id FROM "User" WHERE "teacherId"=$1 LIMIT 1', [teacherId]);
       if (r3.rowCount) throw new Error('TeacherId exists');
     }
+    if (studentId) {
+      const r4 = await pool.query('SELECT id FROM "User" WHERE "studentId"=$1 LIMIT 1', [studentId]);
+      if (r4.rowCount) throw new Error('StudentId exists');
+    }
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
     const insert = await pool.query(
-      'INSERT INTO "User" (username, email, "firstName", "lastName", "teacherId", password, role, "updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING id, username, email, "firstName", "lastName", role, "teacherId"',
-      [username, email, firstName, lastName, teacherId || null, hash, role]
+      'INSERT INTO "User" (username, email, "firstName", "lastName", section, "teacherId", "studentId", password, role, "updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW()) RETURNING id, username, email, "firstName", "lastName", role, "teacherId", "studentId", section',
+      [username, email, firstName, lastName, section || null, teacherId || null, studentId || null, hash, role]
     );
     return insert.rows[0];
   }
@@ -85,11 +93,12 @@ exports.register = async ({ username, email, firstName, lastName, teacherId, pas
   if (users.find(u => u.username === username)) throw new Error('Username exists');
   if (users.find(u => u.email === email)) throw new Error('Email exists');
   if (teacherId && users.find(u => u.teacherId === teacherId)) throw new Error('TeacherId exists');
+  if (studentId && users.find(u => u.studentId === studentId)) throw new Error('StudentId exists');
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
-  const user = { id: users.length + 1, username, email, firstName, lastName, teacherId: teacherId || null, password: hash, role };
+  const user = { id: users.length + 1, username, email, firstName, lastName, teacherId: teacherId || null, studentId: studentId || null, section: section || null, password: hash, role };
   users.push(user);
-  return { id: user.id, username: user.username, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, teacherId: user.teacherId };
+  return { id: user.id, username: user.username, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, teacherId: user.teacherId, studentId: user.studentId, section: user.section };
 };
 
 exports.login = async ({ username, password }) => {
