@@ -4,7 +4,10 @@ WORKDIR /app
 
 # Install dependencies (including dev deps temporarily for prisma generate)
 COPY package.json package-lock.json* ./
-RUN npm ci
+# Use `npm install` instead of `npm ci` to avoid failing when lockfile
+# and package.json are slightly out of sync in the build environment.
+# We still remove dev deps later with `npm prune --production`.
+RUN npm install --no-audit --no-fund
 
 # Copy source
 COPY . .
