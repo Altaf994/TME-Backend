@@ -45,11 +45,9 @@ exports.register = async ({ username, email, firstName, lastName, teacherId, stu
       if (existingByUsername) throw new Error('Username exists');
       const existingByEmail = await prisma.user.findUnique({ where: { email } });
       if (existingByEmail) throw new Error('Email exists');
-      if (teacherId) {
-        const existingByTeacherId = await prisma.user.findUnique({ where: { teacherId } });
-        if (existingByTeacherId) throw new Error('TeacherId exists');
-      }
-      if (studentId) {
+      // No teacherId uniqueness check for teachers
+      // Only check studentId uniqueness if role is student and studentId is provided
+      if (role === 'student' && studentId) {
         const existingByStudentId = await prisma.user.findUnique({ where: { studentId } });
         if (existingByStudentId) throw new Error('StudentId exists');
       }
@@ -72,11 +70,9 @@ exports.register = async ({ username, email, firstName, lastName, teacherId, stu
     if (r1.rowCount) throw new Error('Username exists');
     const r2 = await pool.query('SELECT id FROM "User" WHERE email=$1 LIMIT 1', [email]);
     if (r2.rowCount) throw new Error('Email exists');
-    if (teacherId) {
-      const r3 = await pool.query('SELECT id FROM "User" WHERE "teacherId"=$1 LIMIT 1', [teacherId]);
-      if (r3.rowCount) throw new Error('TeacherId exists');
-    }
-    if (studentId) {
+    // No teacherId uniqueness check for teachers
+    // Only check studentId uniqueness if role is student and studentId is provided
+    if (role === 'student' && studentId) {
       const r4 = await pool.query('SELECT id FROM "User" WHERE "studentId"=$1 LIMIT 1', [studentId]);
       if (r4.rowCount) throw new Error('StudentId exists');
     }
@@ -92,8 +88,9 @@ exports.register = async ({ username, email, firstName, lastName, teacherId, stu
   // fallback: in-memory
   if (users.find(u => u.username === username)) throw new Error('Username exists');
   if (users.find(u => u.email === email)) throw new Error('Email exists');
-  if (teacherId && users.find(u => u.teacherId === teacherId)) throw new Error('TeacherId exists');
-  if (studentId && users.find(u => u.studentId === studentId)) throw new Error('StudentId exists');
+  // No teacherId uniqueness check for teachers
+  // Only check studentId uniqueness if role is student and studentId is provided
+  if (role === 'student' && studentId && users.find(u => u.studentId === studentId)) throw new Error('StudentId exists');
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
   const user = { id: users.length + 1, username, email, firstName, lastName, teacherId: teacherId || null, studentId: studentId || null, section: section || null, password: hash, role };
