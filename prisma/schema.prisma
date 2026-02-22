@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  extensions = [accelerate()]
 }
 
 datasource db {

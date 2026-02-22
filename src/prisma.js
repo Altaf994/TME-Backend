@@ -6,7 +6,8 @@ async function getPrismaClient() {
 	if (prisma) return prisma;
 	const { PrismaClient } = require('@prisma/client');
 	// Use Prisma Accelerate for serverless deployments
-	prisma = new PrismaClient();
+	// Provide an explicit options object to avoid runtime initialization errors
+	prisma = new PrismaClient({ errorFormat: 'pretty' });
 	// try to connect; caller may catch failures
 	await prisma.$connect();
 	return prisma;
