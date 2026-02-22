@@ -13,7 +13,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like server-to-server or curl)
     if (!origin) return callback(null, true);
-    const allowed = ['http://localhost:3002', 'http://localhost:3000', 'http://localhost:3001'];
+    const allowed = ['http://localhost:3002', 'http://localhost:3000', 'http://localhost:3001', 'https://tme-student-production.up.railway.app'];
     if (allowed.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
