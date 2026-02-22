@@ -31,6 +31,7 @@ app.options('*', cors(corsOptions));
 
 // Mount API router
 const apiRouter = require('./src/routes');
+console.log('DEBUG: Mounting /api router');
 app.use('/api', apiRouter);
 
 // Error handler (must come after routes)

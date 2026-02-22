@@ -1,5 +1,16 @@
 const assignService = require('../services/assignService');
 
+// Get all assigned questions grouped by title
+exports.getAssignedQuestionsGroupedByTitle = async (req, res, next) => {
+  console.log('DEBUG: /assignments/grouped endpoint hit');
+  try {
+    const data = await assignService.getAllAssignedQuestionsGroupedByTitle();
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getAssignables = async (req, res, next) => {
   try {
     const data = await assignService.listAssignables();

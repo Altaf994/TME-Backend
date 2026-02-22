@@ -19,4 +19,7 @@ router.get('/assignables', assignController.getAssignables);
 // Create assignment
 router.post('/assignments', assignController.createAssignment);
 
+// Get all assigned questions grouped by title
+router.get('/assignments/grouped', assignController.getAssignedQuestionsGroupedByTitle);
+
 module.exports = router;

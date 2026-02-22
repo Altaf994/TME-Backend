@@ -135,3 +135,18 @@ exports.createAssignment = async ({ complexity, length, numQuestions, speed, tit
 
   return { message: 'Assignment created successfully', count: questions.length };
 };
+
+// Fetch all assigned questions grouped by title
+exports.getAllAssignedQuestionsGroupedByTitle = async () => {
+  const pool = await getPool();
+  const res = await pool.query('SELECT * FROM "AssignedQuestion"');
+  const rows = res.rows;
+  // Group by title
+  const grouped = {};
+  for (const row of rows) {
+    if (!grouped[row.title]) grouped[row.title] = [];
+    grouped[row.title].push(row);
+  }
+  // Convert to array of objects: [{ title, questions: [...] }]
+  return Object.entries(grouped).map(([title, questions]) => ({ title, questions }));
+};
