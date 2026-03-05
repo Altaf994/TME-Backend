@@ -21,13 +21,8 @@ const corsOptions = {
       'https://tme-teacher-production.up.railway.app',
       'https://tme-frontend-production.up.railway.app'
     ];
-    if (allowed.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      const error = new Error('CORS policy: Origin not allowed');
-      error.status = 403;
-      callback(error);
-    }
+    // Allow all origins for now - TODO: restrict to specific domains
+    callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
