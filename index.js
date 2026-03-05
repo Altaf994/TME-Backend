@@ -46,6 +46,17 @@ app.get('/', (req, res) => {
   res.send('Hello from Backend');
 });
 
+// Convenience routes - redirect /auth/* to /api/v1/auth/*
+app.post('/auth/register', (req, res, next) => {
+  req.url = '/api/v1/auth/register';
+  app._router.handle(req, res, next);
+});
+
+app.post('/auth/login', (req, res, next) => {
+  req.url = '/api/v1/auth/login';
+  app._router.handle(req, res, next);
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
